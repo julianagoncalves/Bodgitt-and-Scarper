@@ -18,15 +18,24 @@ class DataConnection:
         self.data_file.seek(0,2)
         self.data_file.seek(0) 
 
-        import pdb; pdb.set_trace()
+        self.magic_cookie = self.reading_fields_binary(4)
+        self.total_each_record = self.reading_fields_binary(4)
+        self.number_fields = self.reading_fields_binary(2)
 
-        magic_cookie = self.reading_fields_binary(4)
-        total_each_record = self.reading_fields_binary(4)
-        number_fields = self.reading_fields_binary(2)
+        self.reading_fields()
+        
+    def reading_fields(self):
+        dict_file = {}
+        
+        for i in range(0,self.number_fields[1]):
 
-        size_name_of_field = self.reading_fields_binary(2)
-        name_of_field = self.reading_fields_string(size_name_of_field[-1])
-        size_of_field_bytes = self.reading_fields_binary(2)
+            size_name_of_field = self.reading_fields_binary(2)
+            name_of_field = self.reading_fields_string(size_name_of_field[-1])
+            size_of_field_bytes = self.reading_fields_binary(2)
+
+            dict_file[name_of_field[0]] = size_of_field_bytes[1]
+
+        return dict_file
 
     def reading_fields_binary(self, number_of_bytes):
 
@@ -35,6 +44,7 @@ class DataConnection:
     def reading_fields_string(self, number_of_bytes):
 
        return struct.unpack(str(number_of_bytes) + 's', self.data_file.read(number_of_bytes))
+
 
 if __name__ == '__main__':
 
