@@ -8,11 +8,9 @@ class DataConnection:
 
     def __init__(self):
         self.data_file = open("./db-2.db", "rb")
-
         self.reading_file()
 
     def reading_file(self):
-
         self.positioning_cursor_begin_file()
 
         self.list_fields_head = self.reading_fields_head()
